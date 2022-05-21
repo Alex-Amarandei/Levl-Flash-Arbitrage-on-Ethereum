@@ -1,0 +1,9 @@
+__pycache__
+.env
+.history
+.hypothesis/
+build/
+reports/
+node_modules
+yarn.lock
+package-lock.json
