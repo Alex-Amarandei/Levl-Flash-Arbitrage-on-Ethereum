@@ -7,6 +7,12 @@ networks:
       uniswap: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
       sushiswap: "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"
 
+  development:
+    infura: ${WEB3_INFURA_PROJECT_ID}
+    factory:
+      uniswap: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+      sushiswap: "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"
+
   mainnet-fork-dev:
     infura: ${WEB3_INFURA_PROJECT_ID}
     factory:

@@ -7,17 +7,7 @@ from scripts.utilities import get_account
 
 
 def get_price_of_pair(factory_address, token_0_address, token_1_address):
-    if token_0_address > token_1_address:
-        aux = token_1_address
-        token_1_address = token_0_address
-        token_0_address = aux
-
-    factory = interface.IUniswapV2Factory(factory_address)
-    pair_address = factory.getPair(
-        token_0_address,
-        token_1_address,
-        {"from": get_account()},
-    )
+    pair_address = get_pair_address(factory_address, token_0_address, token_1_address)
 
     pair_contract = interface.IUniswapV2Pair(pair_address)
 
@@ -26,7 +16,7 @@ def get_price_of_pair(factory_address, token_0_address, token_1_address):
     return (timestamp, reserve_0 / reserve_1)
 
 
-def main():
+def get_pair_info():
     uniswap_factory = config["networks"][network.show_active()]["factory"]["uniswap"]
     sushiswap_factory = config["networks"][network.show_active()]["factory"][
         "sushiswap"
@@ -72,3 +62,31 @@ def main():
             + f"Sushiswap-to-Uniswap Price Deviation: {sushi_uni_deviation}\n"
             + FontColor.ENDC
         )
+
+        print(
+            (
+                FontColor.FAIL + "NOT PROFITABLE"
+                if abs(uni_sushi_deviation) < order["expected_deviation"]
+                and abs(sushi_uni_deviation) < order["expected_deviation"]
+                else FontColor.OKGREEN + "PROFITABLE"
+            )
+            + FontColor.ENDC
+        )
+
+
+def get_pair_address(factory_address, token_0_address, token_1_address):
+    if token_0_address > token_1_address:
+        aux = token_1_address
+        token_1_address = token_0_address
+        token_0_address = aux
+
+    factory = interface.IUniswapV2Factory(factory_address)
+    return factory.getPair(
+        token_0_address,
+        token_1_address,
+        {"from": get_account()},
+    )
+
+
+def main():
+    get_pair_info()
