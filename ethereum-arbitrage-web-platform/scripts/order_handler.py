@@ -19,3 +19,17 @@ def add_to_order_book(token_0_address, token_1_address, expected_deviation):
         order_book_file.seek(0)
 
         json.dump(order_book, order_book_file, indent=4)
+
+
+def remove_from_order_book(id):
+    with open("data/orders.json", "r+") as order_book_file:
+        order_book = json.load(order_book_file)["orders"]
+
+        for order in order_book:
+            if order["id"] == id:
+                del order
+                break
+
+        order_book_file.seek(0)
+
+        json.dump(order_book, order_book_file, indent=4)

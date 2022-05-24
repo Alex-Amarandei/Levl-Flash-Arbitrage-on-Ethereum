@@ -1,16 +1,9 @@
 import json
 
-from brownie import ArbContract, FlashArbitrage, config, interface, network
+from brownie import FlashArbitrage, config, interface, network
 
 from scripts.colors import FontColor
 from scripts.utilities import get_account
-
-
-def deploy_arb_contract():
-    account = get_account()
-    arb_contract = ArbContract.deploy({"from": account})
-    print(FontColor.BOLD + "Deployed contract!\n" + FontColor.ENDC)
-    return arb_contract
 
 
 def deploy_flash_contract():
@@ -31,13 +24,11 @@ def deploy_flash_contract():
 
 
 def deploy_all():
-    arb_contract = deploy_arb_contract()
     flash_contract = deploy_flash_contract()
 
     with open("data/addressBook.json", "r+") as address_book_file:
         address_book = json.load(address_book_file)
 
-        address_book["ArbContract"] = arb_contract.address
         address_book["FlashArbitrage"] = flash_contract.address
 
         address_book_file.seek(0)

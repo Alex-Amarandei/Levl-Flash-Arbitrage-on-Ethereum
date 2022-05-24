@@ -1,4 +1,6 @@
-from brownie import ArbContract, FlashArbitrage, accounts, config, network
+import json
+
+from brownie import FlashArbitrage, accounts, config, interface, network
 
 from scripts.colors import FontColor
 
@@ -19,19 +21,6 @@ def get_account(index=None):
         return accounts.add(config["wallets"]["from_key"])
 
 
-def get_arb_contract():
-    if len(ArbContract) <= 0:
-        print(FontColor.UNDERLINE + "ArbContract does not exist yet" + FontColor.ENDC)
-        return ArbContract.deploy({"from": get_account()})
-    else:
-        print(
-            FontColor.UNDERLINE
-            + f"ArbContract exists at {ArbContract[-1].address}"
-            + FontColor.ENDC
-        )
-        return ArbContract[-1]
-
-
 def get_flash_contract():
     if len(FlashArbitrage) <= 0:
         print(
@@ -41,9 +30,9 @@ def get_flash_contract():
         )
 
         return FlashArbitrage.deploy(
-            "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-            "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-            "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+            interface.IUniswapV2Router02.factory(),
+            get_address_by_name("UniswapRouter"),
+            get_address_by_name("SushiswapRouter"),
             {"from": get_account()},
         )
     else:
@@ -53,3 +42,10 @@ def get_flash_contract():
             + FontColor.ENDC
         )
         return FlashArbitrage[-1]
+
+
+def get_address_by_name(address):
+    with open("data/address_book.json", "r") as address_book_file:
+        address_book = json.load(address_book_file)
+
+        return address_book["address"][network.show_active()]

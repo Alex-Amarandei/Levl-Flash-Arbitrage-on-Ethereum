@@ -2,7 +2,7 @@
 
 pragma solidity >=0.6.6;
 
-import "contracts/libraries/UniswapV2Library.sol";
+import "libraries/UniswapV2Library.sol";
 import "interfaces/IUniswapV2Router02.sol";
 import "interfaces/IUniswapV2Pair.sol";
 import "interfaces/IERC20.sol";

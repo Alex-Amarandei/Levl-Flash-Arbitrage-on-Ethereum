@@ -1,0 +1,27 @@
+{
+    "FlashArbitrage": {
+        "rinkeby": "",
+        "ropsten": "",
+        "mainnet-fork-dev": ""
+    },
+    "ERC20RON": {
+        "rinkeby": "",
+        "ropsten": "0xde131538a5E2CFFDc20ac609c2d572D3b78c1C4c",
+        "mainnet-fork-dev": ""
+    },
+    "ERC20EUR": {
+        "rinkeby": "",
+        "ropsten": "0x539222F0c07292ae69065bD3838569E077D488FC",
+        "mainnet-fork-dev": ""
+    },
+    "UniswapRouter": {
+        "rinkeby": "",
+        "ropsten": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "mainnet-fork-dev": ""
+    },
+    "SushiswapRouter": {
+        "rinkeby": "",
+        "ropsten": "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506",
+        "mainnet-fork-dev": ""
+    }
+}

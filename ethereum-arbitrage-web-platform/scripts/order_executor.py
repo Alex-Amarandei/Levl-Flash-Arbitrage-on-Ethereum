@@ -3,7 +3,8 @@ import json
 from brownie import config, interface, network
 
 from scripts.colors import FontColor
-from scripts.pairs import get_pair_address
+from scripts.order_handler import remove_from_order_book
+from scripts.pair_handler import get_pair_address
 from scripts.utilities import get_account, get_flash_contract
 
 
@@ -17,7 +18,7 @@ def fund_with_gas():
     print(FontColor.OKBLUE + "\nDone!\n" + FontColor.ENDC)
 
 
-def place_order(id=1):
+def execute_order(id=1):
     with open("data/orders.json", "r+") as order_book_file:
         order_book = json.load(order_book_file)["orders"]
         order_to_be_executed = None
@@ -35,7 +36,7 @@ def place_order(id=1):
             )
         )
 
-        with open("data/addressBook.json", "r") as address_book_file:
+        with open("data/address_book.json", "r") as address_book_file:
             address_book = json.load(address_book_file)
             flash_contract_address = address_book["FlashArbitrage"]
             pair_address_uniswap.swap(
@@ -46,12 +47,14 @@ def place_order(id=1):
                 {"from": flash_contract_address},
             )
 
+        remove_from_order_book(id)
+
 
 def execute_order(id=1):
     fund_with_gas()
     fund_with_gas()
     fund_with_gas()
-    place_order(id)
+    execute_order(id)
 
 
 def main():
