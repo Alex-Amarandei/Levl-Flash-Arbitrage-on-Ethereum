@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.6;
+pragma solidity =0.6.6;
 
 import "libraries/UniswapV2Library.sol";
 import "interfaces/IERC20.sol";
@@ -8,71 +8,63 @@ import "interfaces/IUniswapV2Pair.sol";
 import "interfaces/IUniswapV2Callee.sol";
 import "interfaces/IUniswapV2Router02.sol";
 
-uint256 constant MAX_INT = 2**256 - 1;
-
 contract FlashArbitrage is IUniswapV2Callee {
-    address factory;
-    IUniswapV2Router02 uniswapRouter;
-    IUniswapV2Router02 sushiswapRouter;
+    address immutable sFactory;
+    IUniswapV2Router02 immutable uRouter;
 
-    constructor(
-        address _factory,
-        address _uniswapRouter,
-        address _sushiswapRouter
-    ) {
-        factory = _factory;
-        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
-        sushiswapRouter = IUniswapV2Router02(_sushiswapRouter);
+    constructor(address _sFactory, address _uRouter) public {
+        sFactory = _sFactory;
+        uRouter = IUniswapV2Router02(_uRouter);
     }
-
-    receive() external payable {}
 
     function uniswapV2Call(
         address _sender,
         uint256 _amount0,
         uint256 _amount1,
         bytes calldata _data
-    ) external {
-        uint256 deadline = block.timestamp + 1000;
+    ) external override {
         address[] memory path = new address[](2);
-        uint256 amountToken = _amount0 == 0 ? _amount1 : _amount0;
-
-        address token0 = IUniswapV2Pair(msg.sender).token0();
-        address token1 = IUniswapV2Pair(msg.sender).token1();
-
-        require(
-            msg.sender == UniswapV2Library.pairFor(factory, token0, token1),
-            "Unauthorized"
+        (uint256 amountRequired, uint256 deadline) = abi.decode(
+            _data,
+            (uint256, uint256)
         );
-        require(_amount0 == 0 || _amount1 == 0);
-
-        path[0] = _amount0 == 0 ? token1 : token0;
-        path[1] = _amount0 == 0 ? token0 : token1;
-
-        IERC20 token = IERC20(_amount0 == 0 ? token1 : token0);
-
-        token.approve(address(sushiswapRouter), amountToken);
-
-        uint256 amountRequired = UniswapV2Library.getAmountsIn(
-            factory,
-            amountToken,
-            path
-        )[0];
-
-        uint256 amountReceived = sushiswapRouter.swapExactTokensForTokens(
-            amountToken,
-            amountRequired,
-            path,
-            msg.sender,
-            deadline
-        )[1];
-
-        require(
-            amountReceived > amountRequired,
-            "Transaction was not profitable. Reverting..."
-        );
-
-        token.transfer(_sender, amountReceived - amountRequired);
+        if (_amount0 == 0) {
+            uint256 amountEntryToken = _amount1;
+            address token0 = IUniswapV2Pair(msg.sender).token0();
+            address token1 = IUniswapV2Pair(msg.sender).token1();
+            IERC20 entryToken = IERC20(token1);
+            IERC20 exitToken = IERC20(token0);
+            entryToken.approve(address(uRouter), amountEntryToken);
+            path[0] = token1;
+            path[1] = token0;
+            uint256 amountReceived = uRouter.swapExactTokensForTokens(
+                amountEntryToken,
+                0,
+                path,
+                address(this),
+                deadline
+            )[1];
+            exitToken.transfer(msg.sender, amountRequired);
+            exitToken.transfer(_sender, amountReceived - amountRequired);
+        } else {
+            uint256 amountEntryToken = _amount0;
+            address token0 = IUniswapV2Pair(msg.sender).token0();
+            address token1 = IUniswapV2Pair(msg.sender).token1();
+            IERC20 entryToken = IERC20(token0);
+            IERC20 exitToken = IERC20(token1);
+            entryToken.approve(address(uRouter), amountEntryToken);
+            path[0] = token0;
+            path[1] = token1;
+            uint256 amountReceived = uRouter.swapExactTokensForTokens(
+                amountEntryToken,
+                0,
+                path,
+                address(this),
+                deadline
+            )[1];
+            exitToken.transfer(msg.sender, amountRequired);
+            exitToken.transfer(_sender, amountReceived - amountRequired);
+        }
     }
 
     mapping(address => uint256) public userGasAmounts;

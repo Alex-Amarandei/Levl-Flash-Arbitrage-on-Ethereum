@@ -42,7 +42,10 @@ wallets:
 
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@3.4.0
+  - smartcontractkit/chainlink-brownie-contracts@1.1.1
 
 compiler:
   solc:
-    remappings: "@openzeppelin=OpenZeppelin/openzeppelin-contracts@3.4.0"
+    remappings:
+      - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@3.4.0"
+      - "@chainlink=smartcontractkit/chainlink-brownie-contracts@1.1.1"
