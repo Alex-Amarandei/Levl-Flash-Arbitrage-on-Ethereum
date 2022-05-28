@@ -2,8 +2,9 @@ import time
 
 from brownie import interface, network
 
+from scripts.address_book_manager import get_address_at
 from scripts.colors import FontColor
-from scripts.utilities import get_account, get_address_by_name
+from scripts.utilities import get_account
 
 
 def create_pair(
@@ -26,33 +27,33 @@ def create_pair(
         {"from": get_account()},
     )
 
-    (amount_EUR, amount_RON, amount_lp_tokens) = router.addLiquidity(
-        token_0_address,
-        token_1_address,
-        token_0_amount,
-        token_1_amount,
-        token_0_amount,
-        token_1_amount,
-        get_account(),
-        deadline,
-        {
-            "from": account,
-            "gas": 4000000,
-            "gas_price": 4000000000,
-        },
-    )
+    # (amount_EUR, amount_RON, amount_lp_tokens) = router.addLiquidity(
+    #     token_0_address,
+    #     token_1_address,
+    #     token_0_amount,
+    #     token_1_amount,
+    #     token_0_amount,
+    #     token_1_amount,
+    #     get_account(),
+    #     deadline,
+    #     {
+    #         "from": account,
+    #         "gas": 4000000,
+    #         "gas_price": 4000000000,
+    #     },
+    # )
 
-    print(FontColor.OKCYAN + f"EUR in the pool: {amount_EUR}")
-    print(f"RON in the pool: {amount_RON}" + FontColor.ENDC)
-    print(FontColor.BOLD + f"LP Tokens received: {amount_lp_tokens}" + FontColor.ENDC)
+    # print(FontColor.OKCYAN + f"EUR in the pool: {amount_EUR}")
+    # print(f"RON in the pool: {amount_RON}" + FontColor.ENDC)
+    # print(FontColor.BOLD + f"LP Tokens received: {amount_lp_tokens}" + FontColor.ENDC)
 
 
 def main():
-    uniswap_router = get_address_by_name("UniswapRouter")
-    sushiswap_router = get_address_by_name("SushiswapRouter")
+    uniswap_router = get_address_at("UniswapRouter")
+    sushiswap_router = get_address_at("SushiswapRouter")
 
-    EUR_token = get_address_by_name("ERC20EUR")
-    RON_token = get_address_by_name("ERC20RON")
+    EUR_token = get_address_at("ERC20EUR")
+    RON_token = get_address_at("ERC20RON")
 
     create_pair(uniswap_router, EUR_token, RON_token, 100, 500)
     create_pair(sushiswap_router, EUR_token, RON_token, 100, 400)

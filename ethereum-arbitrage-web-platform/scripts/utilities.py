@@ -2,6 +2,7 @@ import json
 
 from brownie import FlashArbitrage, accounts, config, interface, network
 
+from scripts.address_book_manager import get_address_at
 from scripts.colors import FontColor
 
 LOCAL_ENVIRONMENTS = ["development"]
@@ -31,8 +32,8 @@ def get_flash_contract():
 
         return FlashArbitrage.deploy(
             interface.IUniswapV2Router02.factory(),
-            get_address_by_name("UniswapRouter"),
-            get_address_by_name("SushiswapRouter"),
+            get_address_at("UniswapRouter"),
+            get_address_at("SushiswapRouter"),
             {"from": get_account()},
         )
     else:
@@ -42,10 +43,3 @@ def get_flash_contract():
             + FontColor.ENDC
         )
         return FlashArbitrage[-1]
-
-
-def get_address_by_name(address):
-    with open("data/address_book.json", "r") as address_book_file:
-        address_book = json.load(address_book_file)
-
-        return address_book["address"][network.show_active()]

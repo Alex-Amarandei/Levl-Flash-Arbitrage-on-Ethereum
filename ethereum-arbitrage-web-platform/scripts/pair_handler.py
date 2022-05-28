@@ -2,11 +2,15 @@ import json
 
 from brownie import config, interface, network
 
+from scripts.address_book_manager import get_address_at
 from scripts.colors import FontColor
 from scripts.utilities import get_account
 
 
-def get_price_of_pair(factory_address, token_0_address, token_1_address):
+def get_pair_price(factory_address, token_0_address, token_1_address):
+    print(f"factory: {factory_address}")
+    print(f"token_0 {token_0_address}")
+    print(f"token_1 {token_1_address}")
     pair_address = get_pair_address(factory_address, token_0_address, token_1_address)
 
     pair_contract = interface.IUniswapV2Pair(pair_address)
@@ -17,15 +21,17 @@ def get_price_of_pair(factory_address, token_0_address, token_1_address):
 
 
 def get_pair_info():
-    uniswap_factory = config["networks"][network.show_active()]["factory"]["uniswap"]
-    sushiswap_factory = config["networks"][network.show_active()]["factory"][
-        "sushiswap"
-    ]
+    uniswap_factory = interface.IUniswapV2Router02(
+        get_address_at("UniswapRouter")
+    ).factory()
+    sushiswap_factory = interface.IUniswapV2Router02(
+        get_address_at("SushiswapRouter")
+    ).factory()
 
     order_book = json.load(open("data/orders.json", "r"))["orders"]
 
     for order in order_book:
-        (uniswap_timestamp, uniswap_price) = get_price_of_pair(
+        (uniswap_timestamp, uniswap_price) = get_pair_price(
             uniswap_factory, order["token_0_address"], order["token_1_address"]
         )
 
@@ -34,7 +40,7 @@ def get_pair_info():
             + f"\nTimestamp of last interaction with Uniswap Pair: {uniswap_timestamp}"
         )
 
-        (sushiswap_timestamp, sushiswap_price) = get_price_of_pair(
+        (sushiswap_timestamp, sushiswap_price) = get_pair_price(
             sushiswap_factory, order["token_0_address"], order["token_1_address"]
         )
 
@@ -63,15 +69,19 @@ def get_pair_info():
             + FontColor.ENDC
         )
 
-        print(
-            (
-                FontColor.FAIL + "NOT PROFITABLE"
-                if abs(uni_sushi_deviation) < order["expected_deviation"]
-                and abs(sushi_uni_deviation) < order["expected_deviation"]
-                else FontColor.OKGREEN + "PROFITABLE"
-            )
-            + FontColor.ENDC
-        )
+        if (
+            abs(uni_sushi_deviation) < order["expected_deviation"]
+            and abs(sushi_uni_deviation) < order["expected_deviation"]
+        ):
+            print(FontColor.FAIL + "NOT PROFITABLE" + FontColor.ENDC)
+        else:
+            print(FontColor.OKGREEN + "PROFITABLE" + FontColor.ENDC)
+            # successful = execute_order(order["id"])
+
+            # if successful:
+            #     remove_from_order_book(order["id"])
+            # else:
+            #     print("Uf of")
 
 
 def get_pair_address(factory_address, token_0_address, token_1_address):

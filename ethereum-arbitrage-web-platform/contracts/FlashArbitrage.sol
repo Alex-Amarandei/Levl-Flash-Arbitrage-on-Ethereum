@@ -3,13 +3,14 @@
 pragma solidity >=0.6.6;
 
 import "libraries/UniswapV2Library.sol";
-import "interfaces/IUniswapV2Router02.sol";
-import "interfaces/IUniswapV2Pair.sol";
 import "interfaces/IERC20.sol";
+import "interfaces/IUniswapV2Pair.sol";
+import "interfaces/IUniswapV2Callee.sol";
+import "interfaces/IUniswapV2Router02.sol";
 
 uint256 constant MAX_INT = 2**256 - 1;
 
-contract FlashArbitrage {
+contract FlashArbitrage is IUniswapV2Callee {
     address factory;
     IUniswapV2Router02 uniswapRouter;
     IUniswapV2Router02 sushiswapRouter;
@@ -32,7 +33,7 @@ contract FlashArbitrage {
         uint256 _amount1,
         bytes calldata _data
     ) external {
-        uint256 deadline = block.timestamp + 10;
+        uint256 deadline = block.timestamp + 1000;
         address[] memory path = new address[](2);
         uint256 amountToken = _amount0 == 0 ? _amount1 : _amount0;
 
