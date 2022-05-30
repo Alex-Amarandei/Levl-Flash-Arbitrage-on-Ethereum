@@ -93,7 +93,7 @@ while True:
                     )
                     continue
 
-                total_difference = difference * round(amount_to_borrow / 10**18)
+                total_difference = difference * int(amount_to_borrow / 10**18)
 
                 deadline = int(time.time()) + 1800
 
@@ -136,6 +136,71 @@ while True:
                     {"from": get_account(), "gas": gas_needed},
                 )
             else:
-                pass
+                amount_after_selling = interface.IUniswapV2Router02(
+                    uniswap_router_address
+                ).getAmountOut(amount_to_borrow, uniswap_reserves_1, uniswap_reserves_0)
+
+                new_uniswap_reserves_0 = uniswap_reserves_0 - amount_after_selling
+                new_uniswap_reserves_1 = uniswap_reserves_1 + amount_to_borrow
+
+                amount_to_repay = interface.IUniswapV2Router02(
+                    sushiswap_router_address
+                ).getAmountIn(
+                    amount_to_borrow, sushiswap_reserves_0, sushiswap_reserves_1
+                )
+
+                sushiswap_price = amount_to_repay / amount_to_borrow
+
+                difference = amount_after_selling / amount_to_borrow - sushiswap_price
+
+                if difference <= 0:
+                    print(
+                        FontColor.FAIL
+                        + "No profitable arbitrage opportunity confirmed."
+                    )
+                    continue
+
+                total_difference = difference * int(amount_to_borrow / 10**18)
+
+                deadline = int(time.time()) + 1800
+
+                gas_needed = 0.6 * 10**6
+
+                gas_price = 1000001000
+
+                gas_cost = gas_price * gas_needed / 10**18
+
+                profit = total_difference * eth_price_1 - gas_cost
+
+                print(f"Difference: {difference}")
+
+                print(f"Total Difference: {total_difference}")
+
+                print(f"Price in ETH: {eth_price_0}")
+
+                print(f"Profit: {profit}")
+
+                print(f"From 0 to 1: {from_0_to_1}")
+
+                print(f"Price before: {uniswap_reserves_0 / uniswap_reserves_1}")
+
+                print(f"Price after: {new_uniswap_reserves_0 / new_uniswap_reserves_1}")
+
+                print(f"Gas cost: {gas_cost}")
+
+                if profit <= 0:
+                    print("No profit because gas is expensive")
+                    continue
+
+                flash_contract_address = get_flash_contract().address
+                print(flash_contract_address)
+
+                interface.IUniswapV2Pair(sushiswap_pair_address).swap(
+                    0,
+                    amount_to_borrow,
+                    flash_contract_address,
+                    encode_abi(["uint256", "uint256"], [amount_to_repay, deadline]),
+                    {"from": get_account(), "gas": gas_needed},
+                )
 
     time.sleep(10)
