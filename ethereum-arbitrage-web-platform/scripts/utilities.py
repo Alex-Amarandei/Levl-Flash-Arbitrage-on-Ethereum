@@ -31,9 +31,8 @@ def get_flash_contract():
         )
 
         return FlashArbitrage.deploy(
-            interface.IUniswapV2Router02.factory(),
+            interface.IUniswapV2Router02(get_address_at("SushiswapRouter")).factory(),
             get_address_at("UniswapRouter"),
-            get_address_at("SushiswapRouter"),
             {"from": get_account()},
         )
     else:
@@ -74,7 +73,7 @@ def get_factory_address(name):
 def get_eth_price():
     data_provider_contract = get_data_provider_contract()
 
-    return data_provider_contract.functions.getEthPrice(
+    return data_provider_contract.getEthPrice(
         get_address_at("ETHPriceFeed"), {"from": get_account()}
     )
 
@@ -87,7 +86,7 @@ def get_optimal_trade_data(
 ):
     data_provider_contract = get_data_provider_contract()
 
-    return data_provider_contract.functions.getTradeData(
+    return data_provider_contract.getTradeData(
         sushiswap_reserves_0,
         sushiswap_reserves_1,
         uniswap_reserves_0,

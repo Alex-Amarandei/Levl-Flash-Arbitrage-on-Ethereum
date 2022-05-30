@@ -1,8 +1,8 @@
 {
     "orders": [{
         "id": 1,
-        "token_0_address": "0x9Ba5c0d78B03c958a5Cf7C713963c8C47e05933c",
-        "token_1_address": "0xA6a9964FebCF8e2Ff8aD65E98C8f02E56dC54535",
+        "token_0_address": "0x23FBd893f556ad589eC4ea217488E9a61Aa1f37C",
+        "token_1_address": "0xbeA882cE415c5D28CD1dB6E22F3A34496819CD88",
         "expected_deviation": 2
     }],
     "current_id": 1
