@@ -12,9 +12,9 @@ contract DataProvider {
     using SafeMath for uint256;
 
     function getEthPrice(address _priceFeed) public view returns (uint256) {
-        (, int256 answer, , , ) = AggregatorV3Interface(_priceFeed)
+        (, int256 price, , , ) = AggregatorV3Interface(_priceFeed)
             .latestRoundData();
-        return uint256(answer * 10000000000);
+        return uint256(price * 10000000000);
     }
 
     function getTradeData(
@@ -22,22 +22,22 @@ contract DataProvider {
         uint256 externalReserveB,
         uint256 reserveA,
         uint256 reserveB
-    ) public pure returns (bool aToB, uint256 amountIn) {
-        aToB =
+    ) public pure returns (bool fromAToB, uint256 amountIn) {
+        fromAToB =
             FullMath.mulDiv(reserveA, externalReserveB, reserveB) <
             externalReserveA;
 
-        uint256 invariant = reserveA.mul(reserveB);
-
         uint256 leftSide = Babylonian.sqrt(
             FullMath.mulDiv(
-                invariant.mul(1000),
-                aToB ? externalReserveA : externalReserveB,
-                (aToB ? externalReserveB : externalReserveA).mul(997)
+                reserveA.mul(reserveB).mul(1000),
+                fromAToB ? externalReserveA : externalReserveB,
+                (fromAToB ? externalReserveB : externalReserveA).mul(997)
             )
         );
-        uint256 rightSide = (aToB ? reserveA.mul(1000) : reserveB.mul(1000)) /
-            997;
+
+        uint256 rightSide = (
+            fromAToB ? reserveA.mul(1000) : reserveB.mul(1000)
+        ) / 997;
 
         if (leftSide < rightSide) return (false, 0);
 
