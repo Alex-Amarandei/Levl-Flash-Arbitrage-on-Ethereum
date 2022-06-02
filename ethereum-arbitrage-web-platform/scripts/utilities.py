@@ -1,9 +1,8 @@
-import json
+from brownie import DataProvider, accounts, config, interface, network
 
-from brownie import DataProvider, FlashArbitrage, accounts, config, interface, network
-
-from scripts.address_book_manager import get_address_at
+from scripts.address_book_manager import get_address_at, update_address_at
 from scripts.colors import FontColor
+from scripts.deploy_manager import contract_router
 
 LOCAL_ENVIRONMENTS = ["development"]
 FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
@@ -22,46 +21,21 @@ def get_account(index=None):
         return accounts.add(config["wallets"]["from_key"])
 
 
-def get_flash_contract():
-    if len(FlashArbitrage) <= 0:
+def get_contract(contract_name, contract):
+    if len(contract) <= 0:
         print(
             FontColor.UNDERLINE
-            + "The FlashArbitrage Contract does not exist yet"
+            + f"The {contract_name} contract does not exist yet"
             + FontColor.ENDC
         )
-
-        return FlashArbitrage.deploy(
-            interface.IUniswapV2Router02(get_address_at("SushiswapRouter")).factory(),
-            get_address_at("UniswapRouter"),
-            {"from": get_account()},
-        )
+        return contract_router(contract_name, get_account())
     else:
         print(
             FontColor.UNDERLINE
-            + f"The FlashArbitrage Contract exists at {FlashArbitrage[-1].address}"
+            + f"The {contract_name} contract exists at {contract[-1].address}"
             + FontColor.ENDC
         )
-        return FlashArbitrage[-1]
-
-
-def get_data_provider_contract():
-    if len(DataProvider) <= 0:
-        print(
-            FontColor.UNDERLINE
-            + "The DataProvider Contract does not exist yet"
-            + FontColor.ENDC
-        )
-
-        return DataProvider.deploy(
-            {"from": get_account()},
-        )
-    else:
-        print(
-            FontColor.UNDERLINE
-            + f"The DataProvider Contract exists at {DataProvider[-1].address}"
-            + FontColor.ENDC
-        )
-        return DataProvider[-1]
+        return contract[-1]
 
 
 def get_factory_address(name):
@@ -71,7 +45,7 @@ def get_factory_address(name):
 
 
 def get_eth_price():
-    data_provider_contract = get_data_provider_contract()
+    data_provider_contract = get_contract("DataProvider", DataProvider)
 
     return data_provider_contract.getEthPrice(
         get_address_at("ETHPriceFeed"), {"from": get_account()}
@@ -84,7 +58,7 @@ def get_optimal_trade_data(
     uniswap_reserves_0,
     uniswap_reserves_1,
 ):
-    data_provider_contract = get_data_provider_contract()
+    data_provider_contract = get_contract("DataProvider", DataProvider)
 
     return data_provider_contract.getTradeData(
         sushiswap_reserves_0,
@@ -92,4 +66,17 @@ def get_optimal_trade_data(
         uniswap_reserves_0,
         uniswap_reserves_1,
         {"from": get_account()},
+    )
+
+
+def update_info(contract_name, contract_address):
+    print(FontColor.BOLD + "Deployed contract!\n" + FontColor.ENDC)
+
+    update_address_at(contract_name, with_address=contract_address)
+
+    print(
+        FontColor.OKBLUE
+        + FontColor.UNDERLINE
+        + f"{contract_name} contract can be found at {contract_address} on the {network.show_active()} network."
+        + FontColor.ENDC
     )

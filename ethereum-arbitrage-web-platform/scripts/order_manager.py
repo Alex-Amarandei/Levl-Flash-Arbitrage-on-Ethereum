@@ -3,12 +3,10 @@ import json
 from brownie import config, interface, network
 
 from scripts.address_book_manager import get_address_at
-from scripts.colors import FontColor
-from scripts.pair_handler import get_pair_address
-from scripts.utilities import get_account, get_flash_contract
+from scripts.pair_manager import get_pair_address
 
 
-def add_to_order_book(token_0_address, token_1_address, expected_deviation):
+def add_to_order_book(token_0_address, token_1_address, fee):
     with open("data/orders.json", "r+") as order_book_file:
         order_book = json.load(order_book_file)
 
@@ -19,7 +17,7 @@ def add_to_order_book(token_0_address, token_1_address, expected_deviation):
         new_order["id"] = new_id
         new_order["token_0_address"] = token_0_address
         new_order["token_1_address"] = token_1_address
-        new_order["expected_deviation"] = expected_deviation
+        new_order["fee"] = fee
 
         order_book["orders"].append(new_order)
 
@@ -40,16 +38,6 @@ def remove_from_order_book(id):
         order_book_file.seek(0)
 
         json.dump(order_book, order_book_file, indent=4)
-
-
-def fund_with_gas():
-    account = get_account()
-    arb_contract = get_flash_contract()
-
-    print(FontColor.OKBLUE + "\nFunding the contract with gas...\n" + FontColor.ENDC)
-    tx = arb_contract.fundWithGas({"from": account, "value": 10000000000000000})
-    tx.wait(1)
-    print(FontColor.OKBLUE + "\nDone!\n" + FontColor.ENDC)
 
 
 def execute_order(id=1):
@@ -88,7 +76,3 @@ def execute_order(id=1):
         )
 
         remove_from_order_book(id)
-
-
-def main():
-    execute_order()

@@ -2,7 +2,7 @@
 
 pragma solidity >=0.6.6;
 
-contract FundManager {
+contract FundsManager {
     address payable private owner;
     uint256 public fee;
     mapping(address => uint256) public userGasAmounts;

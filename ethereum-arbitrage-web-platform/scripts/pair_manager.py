@@ -81,12 +81,6 @@ def get_pair_info():
             print(FontColor.FAIL + "NOT PROFITABLE" + FontColor.ENDC)
         else:
             print(FontColor.OKGREEN + "PROFITABLE" + FontColor.ENDC)
-            # successful = execute_order(order["id"])
-
-            # if successful:
-            #     remove_from_order_book(order["id"])
-            # else:
-            #     print("Uf of")
 
 
 def get_pair_address(factory_address, token_0_address, token_1_address):
