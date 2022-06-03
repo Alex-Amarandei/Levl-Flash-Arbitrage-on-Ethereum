@@ -1,7 +1,7 @@
 from brownie import DataProvider, FlashArbitrage, FundsManager, network
 
 from scripts.address_book_manager import get_address_at, update_address_at
-from scripts.colors import FontColor
+from scripts.font_manager import highlight, tag
 
 
 def contract_router(contract_name, account):
@@ -14,15 +14,10 @@ def contract_router(contract_name, account):
 
 
 def update_info(contract_name, contract_address):
-    print(FontColor.BOLD + "Deployed contract!\n" + FontColor.ENDC)
-
     update_address_at(contract_name, with_address=contract_address)
 
     print(
-        FontColor.OKBLUE
-        + FontColor.UNDERLINE
-        + f"{contract_name} contract can be found at {contract_address} on the {network.show_active()} network."
-        + FontColor.ENDC
+        f"{tag('DEPLOY')} {contract_name} contract can be found at {highlight(contract_address)} on the {network.show_active()} network."
     )
 
 
@@ -35,7 +30,7 @@ def deploy_funds_manager_contract(account):
         publish_source=True,
     )
 
-    update_info("FundManager", funds_manager_contract.address)
+    update_info("FundsManager", funds_manager_contract.address)
     return funds_manager_contract
 
 
@@ -69,7 +64,6 @@ def deploy_token(account, token_name, token):
     token_contract = token.deploy(
         initial_supply,
         {"from": account},
-        publish_source=True,
     )
 
     update_info(token_name, token_contract.address)

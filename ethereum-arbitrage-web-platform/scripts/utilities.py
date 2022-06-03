@@ -1,14 +1,24 @@
 from brownie import DataProvider, accounts, config, interface, network
 
 from scripts.address_book_manager import get_address_at, update_address_at
-from scripts.colors import FontColor
 from scripts.deploy_manager import contract_router
+from scripts.font_manager import green, highlight, tag, yellow
 
 LOCAL_ENVIRONMENTS = ["development"]
 FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 
 
 def get_account(index=None):
+    ### to delete
+    if index == 1:
+        return accounts.add(
+            "a9e14a3ae5140261a168ad7bbd7eea073c6902a0673807c429a54823c37cb5e3"
+        )
+    if index == 2:
+        return accounts.add(
+            "b649265f4cd1d8913eca0fb9cf22f43a179c730a10b8e5ffe442d85ba02b2e33"
+        )
+    ###
     if (
         network.show_active() in LOCAL_ENVIRONMENTS
         or network.show_active() in FORKED_ENVIRONMENTS
@@ -24,16 +34,12 @@ def get_account(index=None):
 def get_contract(contract_name, contract):
     if len(contract) <= 0:
         print(
-            FontColor.UNDERLINE
-            + f"The {contract_name} contract does not exist yet"
-            + FontColor.ENDC
+            f"{tag('UTILITIES')} {yellow(f'The {contract_name} contract does not exist yet.')}"
         )
         return contract_router(contract_name, get_account())
     else:
         print(
-            FontColor.UNDERLINE
-            + f"The {contract_name} contract exists at {contract[-1].address}"
-            + FontColor.ENDC
+            f"{tag('UTILITIES')} {green(f'The {contract_name} contract is already deployed at')} {highlight(contract[-1].address)}{green('.')}"
         )
         return contract[-1]
 
@@ -70,13 +76,8 @@ def get_optimal_trade_data(
 
 
 def update_info(contract_name, contract_address):
-    print(FontColor.BOLD + "Deployed contract!\n" + FontColor.ENDC)
-
     update_address_at(contract_name, with_address=contract_address)
 
     print(
-        FontColor.OKBLUE
-        + FontColor.UNDERLINE
-        + f"{contract_name} contract can be found at {contract_address} on the {network.show_active()} network."
-        + FontColor.ENDC
+        f"{tag('UTILITIES')}{contract_name} contract can be found at {highlight(contract_address)} on the {network.show_active()} network."
     )

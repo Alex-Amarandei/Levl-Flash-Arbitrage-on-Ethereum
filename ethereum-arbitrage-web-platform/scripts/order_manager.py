@@ -1,12 +1,12 @@
 import json
 
-from brownie import config, interface, network
+from web3 import Web3
 
-from scripts.address_book_manager import get_address_at
-from scripts.pair_manager import get_pair_address
+from scripts.font_manager import highlight, purple, tag, underline
+from scripts.funds_manager import fund_with_gas
 
 
-def add_to_order_book(token_0_address, token_1_address, fee):
+def add_to_order_book(user, token_0_address, token_1_address, fee):
     with open("data/orders.json", "r+") as order_book_file:
         order_book = json.load(order_book_file)
 
@@ -15,6 +15,7 @@ def add_to_order_book(token_0_address, token_1_address, fee):
 
         new_order = dict()
         new_order["id"] = new_id
+        new_order["user_address"] = str(user)
         new_order["token_0_address"] = token_0_address
         new_order["token_1_address"] = token_1_address
         new_order["fee"] = fee
@@ -24,6 +25,15 @@ def add_to_order_book(token_0_address, token_1_address, fee):
         order_book_file.seek(0)
 
         json.dump(order_book, order_book_file, indent=4)
+
+        print(
+            f"{tag('ORDER')} Order added successfully!\n"
+            + f"{underline('ID:')} {purple(new_id)}\n"
+            + f"{underline('User Address:')} {highlight(user)}\n"
+            + f"{underline('Token 0 Address:')} {highlight(token_0_address)}\n"
+            + f"{underline('Token 1 Address:')} {highlight(token_1_address)}\n"
+            + f"{underline('Fee:')} {purple(fee)} ETH\n"
+        )
 
 
 def remove_from_order_book(id):
@@ -39,40 +49,12 @@ def remove_from_order_book(id):
 
         json.dump(order_book, order_book_file, indent=4)
 
-
-def execute_order(id=1):
-    with open("data/orders.json", "r+") as order_book_file:
-        order_book = json.load(order_book_file)["orders"]
-        order_to_be_executed = None
-
-        for order in order_book:
-            if order["id"] == id:
-                order_to_be_executed = order
-                break
-
-        uniswap_pair = interface.IUniswapV2Pair(
-            get_pair_address(
-                config["networks"][network.show_active()]["factory"]["uniswap"],
-                order_to_be_executed["token_0_address"],
-                order_to_be_executed["token_1_address"],
-            )
+        print(
+            f"{tag('ORDER')} Successfully removed order {purple(id)} from the order book."
         )
 
-        flash_contract_address = get_address_at("FlashArbitrage")
 
-        print(uniswap_pair.token0())
+def place_order(user, token_0_address, token_1_address, fee):
+    fund_with_gas(user, Web3.toWei(fee, "ether"))
 
-        uniswap_pair.swap(
-            0,
-            10,
-            flash_contract_address,
-            "2".encode("utf-8"),
-            {
-                "from": flash_contract_address,
-                "gas": 4000000,
-                "gas_price": 4000000000,
-                "allow_revert": True,
-            },
-        )
-
-        remove_from_order_book(id)
+    add_to_order_book(user, token_0_address, token_1_address, fee)
