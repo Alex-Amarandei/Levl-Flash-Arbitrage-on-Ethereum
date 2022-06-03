@@ -1,37 +1,29 @@
 {
     "FlashArbitrage": {
-        "rinkeby": "0xb4b8215b17Fc3424CF9E4a045B1d0841f1789550",
-        "ropsten": "",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x157365Df7f6096E6353365bf41ADbe06793201F5"
+    },
+    "FundsManager": {
+        "rinkeby": "0xfa5CE20C7eeD589BEa0eb922E5712117fbaf9175"
+    },
+    "DataProvider": {
+        "rinkeby": "0xf783FA7CaddE0E7f25136c98a71dbe9eBFC9f7c5"
     },
     "ERC20RON": {
-        "rinkeby": "0x23FBd893f556ad589eC4ea217488E9a61Aa1f37C",
-        "ropsten": "0xde131538a5E2CFFDc20ac609c2d572D3b78c1C4c",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x1AfA735A01038701240cb275849398316485cfCA"
     },
     "ERC20EUR": {
-        "rinkeby": "0xbeA882cE415c5D28CD1dB6E22F3A34496819CD88",
-        "ropsten": "0x539222F0c07292ae69065bD3838569E077D488FC",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x17Bc790c97b39c900B994159CE57Ebd409808cDC"
     },
     "UniswapRouter": {
-        "rinkeby": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-        "ropsten": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
     },
     "SushiswapRouter": {
-        "rinkeby": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-        "ropsten": "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
     },
     "DAI": {
-        "rinkeby": "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735",
-        "ropsten": "",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735"
     },
     "ETHPriceFeed": {
-        "rinkeby": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
-        "ropsten": "",
-        "mainnet-fork-dev": ""
+        "rinkeby": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e"
     }
 }

@@ -2,77 +2,90 @@
 
 pragma solidity =0.6.6;
 
-import "libraries/UniswapV2Library.sol";
-import "interfaces/IERC20.sol";
-import "interfaces/IUniswapV2Pair.sol";
-import "interfaces/IUniswapV2Callee.sol";
-import "interfaces/IUniswapV2Router02.sol";
+import "../libraries/UniswapV2Library.sol";
+import "../interfaces/IERC20.sol";
+import "../interfaces/IUniswapV2Pair.sol";
+import "../interfaces/IUniswapV2Callee.sol";
+import "../interfaces/IUniswapV2Router02.sol";
+import "../libraries/FullMath.sol";
 
 contract FlashArbitrage is IUniswapV2Callee {
-    address immutable sFactory;
-    IUniswapV2Router02 immutable uRouter;
+    IUniswapV2Router02 immutable uniswapRouter;
 
-    constructor(address _sFactory, address _uRouter) public {
-        sFactory = _sFactory;
-        uRouter = IUniswapV2Router02(_uRouter);
+    constructor(address _uniswapRouter) public {
+        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
     function uniswapV2Call(
-        address _sender,
-        uint256 _amount0,
-        uint256 _amount1,
+        address _owner,
+        uint256 _amountToken0,
+        uint256 _amountToken1,
         bytes calldata _data
     ) external override {
-        address[] memory path = new address[](2);
-        (uint256 amountRequired, uint256 deadline) = abi.decode(
+        (uint256 amountToRepay, uint256 deadline, address user) = abi.decode(
             _data,
-            (uint256, uint256)
+            (uint256, uint256, address)
         );
-        if (_amount0 == 0) {
-            uint256 amountEntryToken = _amount1;
-            address token0 = IUniswapV2Pair(msg.sender).token0();
-            address token1 = IUniswapV2Pair(msg.sender).token1();
-            IERC20 entryToken = IERC20(token1);
-            IERC20 exitToken = IERC20(token0);
-            entryToken.approve(address(uRouter), amountEntryToken);
-            path[0] = token1;
-            path[1] = token0;
-            uint256 amountReceived = uRouter.swapExactTokensForTokens(
-                amountEntryToken,
-                0,
-                path,
-                address(this),
-                deadline
-            )[1];
-            exitToken.transfer(msg.sender, amountRequired);
-            exitToken.transfer(_sender, amountReceived - amountRequired);
+
+        uint256 amount;
+        address inTokenAddress;
+        address outTokenAddress;
+
+        if (_amountToken0 == 0) {
+            amount = _amountToken1;
+            inTokenAddress = IUniswapV2Pair(msg.sender).token1();
+            outTokenAddress = IUniswapV2Pair(msg.sender).token0();
         } else {
-            uint256 amountEntryToken = _amount0;
-            address token0 = IUniswapV2Pair(msg.sender).token0();
-            address token1 = IUniswapV2Pair(msg.sender).token1();
-            IERC20 entryToken = IERC20(token0);
-            IERC20 exitToken = IERC20(token1);
-            entryToken.approve(address(uRouter), amountEntryToken);
-            path[0] = token0;
-            path[1] = token1;
-            uint256 amountReceived = uRouter.swapExactTokensForTokens(
-                amountEntryToken,
-                0,
-                path,
-                address(this),
-                deadline
-            )[1];
-            exitToken.transfer(msg.sender, amountRequired);
-            exitToken.transfer(_sender, amountReceived - amountRequired);
+            amount = _amountToken0;
+            inTokenAddress = IUniswapV2Pair(msg.sender).token0();
+            outTokenAddress = IUniswapV2Pair(msg.sender).token1();
         }
+
+        (IERC20 outToken, uint256 profit) = executeSwap(
+            amount,
+            inTokenAddress,
+            outTokenAddress,
+            amountToRepay,
+            deadline
+        );
+
+        {
+            uint256 tax = FullMath.mulDiv(profit, 1, 1000);
+            outToken.transfer(payable(_owner), tax);
+            profit -= tax;
+        }
+
+        outToken.transfer(payable(user), profit);
     }
 
-    mapping(address => uint256) public userGasAmounts;
+    function executeSwap(
+        uint256 _amountInToken,
+        address _inTokenAdress,
+        address _outTokenAdress,
+        uint256 _amountToRepay,
+        uint256 _deadline
+    ) internal returns (IERC20, uint256) {
+        IERC20 outToken = IERC20(_outTokenAdress);
+        uint256 amountGained;
 
-    function fundWithGas() public payable {
-        uint256 requiredETH = 10000000000000000;
-        require(msg.value == requiredETH, "You need to send exactly 0.01 ETH!");
+        IERC20(_inTokenAdress).approve(address(uniswapRouter), _amountInToken);
 
-        userGasAmounts[msg.sender] += msg.value;
+        {
+            address[] memory path = new address[](2);
+            path[0] = _inTokenAdress;
+            path[1] = _outTokenAdress;
+
+            amountGained = uniswapRouter.swapExactTokensForTokens(
+                _amountInToken,
+                0,
+                path,
+                address(this),
+                _deadline
+            )[1];
+        }
+
+        outToken.transfer(msg.sender, _amountToRepay);
+
+        return (outToken, amountGained - _amountToRepay);
     }
 }
