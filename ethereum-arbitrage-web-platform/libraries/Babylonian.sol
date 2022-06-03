@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// taken from: https://github.com/abdk-consulting/abdk-libraries-solidity/blob/master/ABDKMath64x64.sol#L687
 
 pragma solidity >=0.4.0;
 
-// computes square roots using the babylonian method
-// https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
 library Babylonian {
-    // credit for this implementation goes to
-    // https://github.com/abdk-consulting/abdk-libraries-solidity/blob/master/ABDKMath64x64.sol#L687
     function sqrt(uint256 x) internal pure returns (uint256) {
         if (x == 0) return 0;
         // this block is equivalent to r = uint256(1) << (BitMath.mostSignificantBit(x) / 2);
