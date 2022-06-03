@@ -2,12 +2,12 @@
 
 pragma solidity =0.6.6;
 
-import "libraries/UniswapV2Library.sol";
-import "interfaces/IERC20.sol";
-import "interfaces/IUniswapV2Pair.sol";
-import "interfaces/IUniswapV2Callee.sol";
-import "interfaces/IUniswapV2Router02.sol";
-import "libraries/FullMath.sol";
+import "../libraries/UniswapV2Library.sol";
+import "../interfaces/IERC20.sol";
+import "../interfaces/IUniswapV2Pair.sol";
+import "../interfaces/IUniswapV2Callee.sol";
+import "../interfaces/IUniswapV2Router02.sol";
+import "../libraries/FullMath.sol";
 
 contract FlashArbitrage is IUniswapV2Callee {
     IUniswapV2Router02 immutable uniswapRouter;

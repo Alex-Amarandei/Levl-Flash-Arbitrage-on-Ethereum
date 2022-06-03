@@ -32,6 +32,7 @@ def deploy_funds_manager_contract(account):
         {
             "from": account,
         },
+        publish_source=True,
     )
 
     update_info("FundManager", funds_manager_contract.address)
@@ -44,6 +45,7 @@ def deploy_flash_arbitrage_contract(account):
         {
             "from": account,
         },
+        publish_source=True,
     )
 
     update_info("FlashArbitrage", flash_arbitrage_contract.address)
@@ -55,6 +57,7 @@ def deploy_data_provider_contract(account):
         {
             "from": account,
         },
+        publish_source=True,
     )
 
     update_info("DataProvider", data_provider_contract.address)
@@ -63,7 +66,11 @@ def deploy_data_provider_contract(account):
 
 def deploy_token(account, token_name, token):
     initial_supply = 100000000000000000000000000
-    token_contract = token.deploy(initial_supply, {"from": account})
+    token_contract = token.deploy(
+        initial_supply,
+        {"from": account},
+        publish_source=True,
+    )
 
     update_info(token_name, token_contract.address)
     return token_contract

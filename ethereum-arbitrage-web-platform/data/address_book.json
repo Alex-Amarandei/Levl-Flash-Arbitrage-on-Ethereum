@@ -1,12 +1,12 @@
 {
     "FlashArbitrage": {
-        "rinkeby": "0xFd91BafBA679A5258978905eA7E01996CeE1813e"
+        "rinkeby": "0xb26100cc8f1B2c8705aF45aB148B45cD2D90bC4c"
     },
     "FundManager": {
-        "rinkeby": "0xA623117e6A1F8C6bbf8870eDAfE4dc00679520dF"
+        "rinkeby": "0x553b1A44C2514564c851a175e6d438A8b92E52A8"
     },
     "DataProvider": {
-        "rinkeby": "0x69610bfc1E5e65310F9b5b5eD4FA57C911fFEd66"
+        "rinkeby": "0xC0192c3588d55265f4F479346045c4f8e0c5fD58"
     },
     "ERC20RON": {
         "rinkeby": "0x23FBd893f556ad589eC4ea217488E9a61Aa1f37C"

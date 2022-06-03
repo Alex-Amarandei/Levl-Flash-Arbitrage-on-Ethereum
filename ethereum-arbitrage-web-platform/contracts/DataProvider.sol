@@ -4,9 +4,9 @@ pragma solidity ^0.6.6;
 
 import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
-import "libraries/Babylonian.sol";
-import "libraries/SafeMath.sol";
-import "libraries/FullMath.sol";
+import "../libraries/Babylonian.sol";
+import "../libraries/SafeMath.sol";
+import "../libraries/FullMath.sol";
 
 contract DataProvider {
     using SafeMath for uint256;

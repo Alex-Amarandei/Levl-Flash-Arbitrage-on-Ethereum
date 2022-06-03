@@ -8,6 +8,6 @@ from scripts.utilities import get_account
 
 def main():
     account = get_account()
-    deploy_funds_manager_contract(account)
-    deploy_data_provider_contract(account)
+    # deploy_funds_manager_contract(account)
+    # deploy_data_provider_contract(account)
     deploy_flash_arbitrage_contract(account)

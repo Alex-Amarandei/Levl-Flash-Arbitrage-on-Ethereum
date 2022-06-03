@@ -90,7 +90,6 @@ def get_pair_address(factory_address, token_0_address, token_1_address):
         aux = token_1_address
         token_1_address = token_0_address
         token_0_address = aux
-
         switched = True
 
     factory = interface.IUniswapV2Factory(factory_address)
