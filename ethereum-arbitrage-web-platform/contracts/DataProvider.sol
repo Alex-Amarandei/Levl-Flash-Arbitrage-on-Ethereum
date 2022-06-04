@@ -30,31 +30,39 @@ contract DataProvider {
      * @dev "This" exchange is the exchange from which the flash loan is taken
      * The "other" exchange is the exchange on which the swap is executed
      */
-    /// @return The direction of the trade and the maximum amount of tokens to be traded
+    /**
+     * @return from0To1, amountIn
+     * - The direction of the trade
+     * - The maximum amount of tokens to be traded
+     */
     function getTradeData(
         uint256 _externalReserve0,
         uint256 _externalReserve1,
         uint256 _reserve0,
         uint256 _reserve1
-    ) public pure returns (bool fromAToB, uint256 amountIn) {
-        fromAToB =
-            FullMath.mulDiv(_reserve0, _externalReserve1, _reserve1) <
-            _externalReserve0;
+    ) public pure returns (bool, uint256) {
+        bool from0To1 = FullMath.mulDiv(
+            _reserve0,
+            _externalReserve1,
+            _reserve1
+        ) < _externalReserve0;
 
         uint256 leftSide = Babylonian.sqrt(
             FullMath.mulDiv(
                 _reserve0.mul(_reserve1).mul(1000),
-                fromAToB ? _externalReserve0 : _externalReserve1,
-                (fromAToB ? _externalReserve1 : _externalReserve0).mul(997)
+                from0To1 ? _externalReserve0 : _externalReserve1,
+                (from0To1 ? _externalReserve1 : _externalReserve0).mul(997)
             )
         );
 
         uint256 rightSide = (
-            fromAToB ? _reserve0.mul(1000) : _reserve1.mul(1000)
+            from0To1 ? _reserve0.mul(1000) : _reserve1.mul(1000)
         ) / 997;
 
         if (leftSide < rightSide) return (false, 0);
 
-        amountIn = leftSide.sub(rightSide);
+        uint256 amountIn = leftSide.sub(rightSide);
+
+        return (from0To1, amountIn);
     }
 }

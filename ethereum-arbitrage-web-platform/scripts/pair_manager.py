@@ -1,4 +1,4 @@
-from brownie import interface, network
+from brownie import interface
 
 from scripts.address_book_manager import get_address_at
 from scripts.utilities import get_account, highlight, tag

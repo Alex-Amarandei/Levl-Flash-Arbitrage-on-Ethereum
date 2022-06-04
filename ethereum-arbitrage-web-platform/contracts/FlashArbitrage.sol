@@ -19,7 +19,7 @@ import "../libraries/FullMath.sol";
 contract FlashArbitrage is IUniswapV2Callee {
     IUniswapV2Router02 immutable uniswapRouter;
 
-    /// @param The address of the Uniswap V2 Router Contract
+    /// @param _uniswapRouter The address of the Uniswap V2 Router Contract
     constructor(address _uniswapRouter) public {
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
