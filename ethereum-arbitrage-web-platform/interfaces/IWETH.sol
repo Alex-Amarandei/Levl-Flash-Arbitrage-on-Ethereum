@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0-or-later
+// taken from: https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IWETH.sol
 
 pragma solidity >=0.5.0;
 

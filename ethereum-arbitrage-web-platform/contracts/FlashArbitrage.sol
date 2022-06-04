@@ -9,13 +9,35 @@ import "../interfaces/IUniswapV2Callee.sol";
 import "../interfaces/IUniswapV2Router02.sol";
 import "../libraries/FullMath.sol";
 
+/// @title Flash Arbitrage Contract
+/// @author Amarandei Matei Alexandru (@Alex-Amarandei)
+/// @notice Performs a Flash Swap composed of Flash Loan on Sushiswap, Swap on Uniswap
+/**
+ * @dev Implements the IUniswapV2Callee interface
+ * in order to be called by the subsiding pair contract
+ */
 contract FlashArbitrage is IUniswapV2Callee {
     IUniswapV2Router02 immutable uniswapRouter;
 
+    /// @param _uniswapRouter The address of the Uniswap V2 Router Contract
     constructor(address _uniswapRouter) public {
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
+    /// @param _owner The Arbitrage Platform's wallet address
+    /// @param _amountToken0 The amount of token 0 to be swapped
+    /// @param _amountToken1 The amount of token 1 to be swapped
+    /// @dev One of the amounts will always be 0 to trigger the flash loan
+    /**
+     * @param _data Encodes the amount to be repaid to the Sushiswap contract,
+     * the deadline (UNIX Timestamp) before the transaction is cancelled
+     * and the address of the user who placed the order
+     */
+    /**
+     * @notice Is called by the pair in which the swap occurs and transfers:
+     * - the tax to the platform's wallet
+     * - the profits to the user who placed the order
+     */
     function uniswapV2Call(
         address _owner,
         uint256 _amountToken0,
@@ -58,22 +80,33 @@ contract FlashArbitrage is IUniswapV2Callee {
         outToken.transfer(payable(user), profit);
     }
 
+    /// @param _amountInToken The amount to be sold of the token provided
+    /// @param _inTokenAddress The address of the token to be sold
+    /// @param _outTokenAddress The address of the token to be bought
+    /// @param _amountToRepay The amount to be repaid to the Sushiswap contract
+    /// @param _deadline The deadline (UNIX Timestamp) before the transaction is cancelled
+    /// @return The IERC20 Token that was bought and the profit made
+    /**
+     * @notice Is called by the uniswapV2Call function and:
+     * - executes the optimistic swap
+     * - transfers the amount borrowed to the Sushiswap contract
+     */
     function executeSwap(
         uint256 _amountInToken,
-        address _inTokenAdress,
-        address _outTokenAdress,
+        address _inTokenAddress,
+        address _outTokenAddress,
         uint256 _amountToRepay,
         uint256 _deadline
     ) internal returns (IERC20, uint256) {
-        IERC20 outToken = IERC20(_outTokenAdress);
+        IERC20 outToken = IERC20(_outTokenAddress);
         uint256 amountGained;
 
-        IERC20(_inTokenAdress).approve(address(uniswapRouter), _amountInToken);
+        IERC20(_inTokenAddress).approve(address(uniswapRouter), _amountInToken);
 
         {
             address[] memory path = new address[](2);
-            path[0] = _inTokenAdress;
-            path[1] = _outTokenAdress;
+            path[0] = _inTokenAddress;
+            path[1] = _outTokenAddress;
 
             amountGained = uniswapRouter.swapExactTokensForTokens(
                 _amountInToken,
