@@ -38,11 +38,6 @@ contract FundsManager {
     /// @param _all Specifies if a user wants to cancel all their existing orders
     /// @notice Refunds the fees accumulated partially or fully
     function refundGas(bool _all) public {
-        require(
-            userGasAmounts[msg.sender] > 0,
-            "You do not have any remaining funds to withdraw"
-        );
-
         address payable user = payable(msg.sender);
 
         if (_all || userGasAmounts[msg.sender] < fee) {
@@ -57,11 +52,6 @@ contract FundsManager {
     /// @param _userAddress The user "account" which is to be debited
     /// @notice The fee is debited in order to simulate using user funds for gas
     function useGas(address _userAddress) external ownerOnly {
-        require(
-            userGasAmounts[_userAddress] > 0,
-            "User does not have any funds left to pay the gas!"
-        );
-
         if (userGasAmounts[_userAddress] >= fee) {
             owner.transfer(fee);
             userGasAmounts[_userAddress] -= fee;

@@ -27,7 +27,7 @@ def deploy_funds_manager_contract(account):
         {
             "from": account,
         },
-        publish_source=True,
+        # publish_source=True,
     )
 
     update_info("FundsManager", funds_manager_contract.address)
@@ -40,7 +40,7 @@ def deploy_flash_arbitrage_contract(account):
         {
             "from": account,
         },
-        publish_source=True,
+        # publish_source=True,
     )
 
     update_info("FlashArbitrage", flash_arbitrage_contract.address)
@@ -52,7 +52,7 @@ def deploy_data_provider_contract(account):
         {
             "from": account,
         },
-        publish_source=True,
+        # publish_source=True,
     )
 
     update_info("DataProvider", data_provider_contract.address)
