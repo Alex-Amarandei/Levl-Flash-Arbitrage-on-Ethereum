@@ -47,9 +47,9 @@ def main():
             stable_price_eth = get_eth_price() / 10**18
 
             eth_price_0 = stable_price_0 / stable_price_eth
-
+            print(eth_price_0)
             eth_price_1 = stable_price_1 / stable_price_eth
-
+            print(eth_price_1)
             (uniswap_reserves_0, uniswap_reserves_1, _) = interface.IUniswapV2Pair(
                 uniswap_pair_address
             ).getReserves({"from": get_account()})
@@ -64,6 +64,8 @@ def main():
                 uniswap_reserves_0,
                 uniswap_reserves_1,
             )
+
+            print(from_0_to_1, amount_to_borrow)
 
             if amount_to_borrow == 0:
                 print(
@@ -104,7 +106,7 @@ def main():
             ).getAmountIn(
                 amount_to_borrow, sushiswap_in_reserves, sushiswap_out_reserves
             )
-
+            print(amount_to_repay, amount_after_selling)
             if from_0_to_1:
                 sushiswap_price = amount_to_borrow / amount_to_repay
 

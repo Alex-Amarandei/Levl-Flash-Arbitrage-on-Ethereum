@@ -22,13 +22,13 @@ contract DataProvider {
     }
 
     /// @notice based on: https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2LiquidityMathLibrary.sol
-    /// @param _externalReserve0 The price of token 0 on the other exchange
-    /// @param _externalReserve1 The price of token 1 on the other exchange
-    /// @param _reserve0 The price of token 0 on this exchange
-    /// @param _reserve1 The price of token 1 on this exchange
+    /// @param _targetReserve0 The intended price of token 0
+    /// @param _targetReserve1 The intended price of token 1
+    /// @param _currentReserve0 The current price of token 0
+    /// @param _currentReserve1 The current price of token 1
     /**
-     * @dev "This" exchange is the exchange from which the flash loan is taken
-     * The "other" exchange is the exchange on which the swap is executed
+     * @dev The "intended" price represents the price towards which to shift
+     * the current price through the use of arbitrage
      */
     /**
      * @return from0To1, amountIn
@@ -36,27 +36,27 @@ contract DataProvider {
      * - The maximum amount of tokens to be traded
      */
     function getTradeData(
-        uint256 _externalReserve0,
-        uint256 _externalReserve1,
-        uint256 _reserve0,
-        uint256 _reserve1
+        uint256 _targetReserve0,
+        uint256 _targetReserve1,
+        uint256 _currentReserve0,
+        uint256 _currentReserve1
     ) public pure returns (bool, uint256) {
         bool from0To1 = FullMath.mulDiv(
-            _reserve0,
-            _externalReserve1,
-            _reserve1
-        ) < _externalReserve0;
+            _currentReserve0,
+            _targetReserve1,
+            _currentReserve1
+        ) < _targetReserve0;
 
         uint256 leftSide = Babylonian.sqrt(
             FullMath.mulDiv(
-                _reserve0.mul(_reserve1).mul(1000),
-                from0To1 ? _externalReserve0 : _externalReserve1,
-                (from0To1 ? _externalReserve1 : _externalReserve0).mul(997)
+                _currentReserve0.mul(_currentReserve1).mul(1000),
+                from0To1 ? _targetReserve0 : _targetReserve1,
+                (from0To1 ? _targetReserve1 : _targetReserve0).mul(997)
             )
         );
 
         uint256 rightSide = (
-            from0To1 ? _reserve0.mul(1000) : _reserve1.mul(1000)
+            from0To1 ? _currentReserve0.mul(1000) : _currentReserve1.mul(1000)
         ) / 997;
 
         if (leftSide < rightSide) return (false, 0);

@@ -4,16 +4,17 @@
     },
     "FundsManager": {
         "rinkeby": "0xfa5CE20C7eeD589BEa0eb922E5712117fbaf9175",
-        "development": "0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87"
+        "development": "0x602C71e4DAC47a042Ee7f46E0aee17F94A3bA0B6"
     },
     "DataProvider": {
-        "rinkeby": "0xf783FA7CaddE0E7f25136c98a71dbe9eBFC9f7c5"
+        "rinkeby": "0xf783FA7CaddE0E7f25136c98a71dbe9eBFC9f7c5",
+        "development": "0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87"
     },
     "ERC20RON": {
-        "rinkeby": "0x1AfA735A01038701240cb275849398316485cfCA"
+        "rinkeby": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0"
     },
     "ERC20EUR": {
-        "rinkeby": "0x17Bc790c97b39c900B994159CE57Ebd409808cDC"
+        "rinkeby": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102"
     },
     "UniswapRouter": {
         "rinkeby": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
