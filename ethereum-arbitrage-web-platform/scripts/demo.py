@@ -59,9 +59,9 @@ def run_arbitrage_bot():
 
 
 def main():
-    account = get_account()
+    account = get_account(33)
 
     deploy_tokens(account)
-    deploy_all_contracts(account)
-    add_three_mock_orders()
-    run_arbitrage_bot()
+    # deploy_all_contracts(account)
+    # add_three_mock_orders()
+    # run_arbitrage_bot()

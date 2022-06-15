@@ -10,14 +10,14 @@ FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 
 def get_account(index=None):
     ### to delete
-    if index == 1:
+    if index == 33:
         return accounts.add(
-            "a9e14a3ae5140261a168ad7bbd7eea073c6902a0673807c429a54823c37cb5e3"
+            "15310ce5fce82c4d0fb47b279d753db2932ab41230a24e5e4f9f5f168686af6f"
         )
-    if index == 2:
-        return accounts.add(
-            "b649265f4cd1d8913eca0fb9cf22f43a179c730a10b8e5ffe442d85ba02b2e33"
-        )
+    # if index == 2:
+    #     return accounts.add(
+    #         "b649265f4cd1d8913eca0fb9cf22f43a179c730a10b8e5ffe442d85ba02b2e33"
+    #     )
     ###
     if (
         network.show_active() in LOCAL_ENVIRONMENTS

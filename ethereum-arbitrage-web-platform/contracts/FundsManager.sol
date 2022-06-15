@@ -37,38 +37,35 @@ contract FundsManager {
 
     /// @param _all Specifies if a user wants to cancel all their existing orders
     /// @notice Refunds the fees accumulated partially or fully
-    function refundGas(bool _all) public {
+    function refundGas(bool _all, uint256 _fee) public {
         require(
-            userGasAmounts[msg.sender] > 0,
-            "You do not have any remaining funds to withdraw"
+            userGasAmounts[msg.sender] >= _fee,
+            "This account has no associated funds left or not enough for the fee provided!"
         );
 
         address payable user = payable(msg.sender);
 
-        if (_all || userGasAmounts[msg.sender] < fee) {
+        if (_all) {
             user.transfer(userGasAmounts[msg.sender]);
             userGasAmounts[msg.sender] = 0;
         } else {
-            user.transfer(fee);
-            userGasAmounts[msg.sender] -= fee;
+            require(_fee > 0, "The fee cannot be zero.");
+            user.transfer(_fee);
+            userGasAmounts[msg.sender] -= _fee;
         }
     }
 
     /// @param _userAddress The user "account" which is to be debited
     /// @notice The fee is debited in order to simulate using user funds for gas
-    function useGas(address _userAddress) external ownerOnly {
+    function useGas(address _userAddress, uint256 _fee) external ownerOnly {
+        require(_fee > 0, "The fee cannot be zero.");
         require(
-            userGasAmounts[_userAddress] > 0,
-            "User does not have any funds left to pay the gas!"
+            userGasAmounts[msg.sender] >= _fee,
+            "This account has no associated funds left or not enough for the fee provided!"
         );
 
-        if (userGasAmounts[_userAddress] >= fee) {
-            owner.transfer(fee);
-            userGasAmounts[_userAddress] -= fee;
-        } else {
-            owner.transfer(userGasAmounts[_userAddress]);
-            userGasAmounts[_userAddress] = 0;
-        }
+        owner.transfer(_fee);
+        userGasAmounts[_userAddress] -= _fee;
     }
 
     /// @param _newFee The new fee of placing an order

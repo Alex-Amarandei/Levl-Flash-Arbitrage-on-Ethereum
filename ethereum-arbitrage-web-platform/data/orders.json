@@ -1,26 +1,10 @@
 {
-    "current_id": 9,
-    "orders": [
-        {
-            "id": 7,
-            "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
-            "token_0_address": "0x1AfA735A01038701240cb275849398316485cfCA",
-            "token_1_address": "0x17Bc790c97b39c900B994159CE57Ebd409808cDC",
-            "fee": 0.01
-        },
-        {
-            "id": 8,
-            "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
-            "token_0_address": "0x17Bc790c97b39c900B994159CE57Ebd409808cDC",
-            "token_1_address": "0x1AfA735A01038701240cb275849398316485cfCA",
-            "fee": 0.02
-        },
-        {
-            "id": 9,
-            "user_address": "0x8C2fB59F137684Ef5b23d68d51fDA3c355294f6B",
-            "token_0_address": "0x1AfA735A01038701240cb275849398316485cfCA",
-            "token_1_address": "0x17Bc790c97b39c900B994159CE57Ebd409808cDC",
-            "fee": 1
-        }
-    ]
+    "current_id": 7,
+    "orders": [{
+        "id": 7,
+        "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
+        "token_0_address": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102",
+        "token_1_address": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0",
+        "fee": 0.01
+    }]
 }
