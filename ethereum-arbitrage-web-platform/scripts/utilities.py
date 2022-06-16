@@ -1,4 +1,7 @@
-from brownie import DataProvider, accounts, config, interface, network
+import json
+
+import yaml
+from brownie import DataProvider, FundsManager, accounts, config, interface, network
 
 from scripts.address_book_manager import get_address_at, update_address_at
 from scripts.deploy_manager import contract_router
@@ -6,6 +9,8 @@ from scripts.font_manager import green, highlight, tag, yellow
 
 LOCAL_ENVIRONMENTS = ["development"]
 FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
+
+ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 
 def get_account(index=None):
@@ -81,3 +86,8 @@ def update_info(contract_name, contract_address):
     print(
         f"{tag('UTILITIES')}{contract_name} contract can be found at {highlight(contract_address)} on the {network.show_active()} network."
     )
+
+
+def get_fee():
+    funds_manager_contract = get_contract("FundsManager", FundsManager)
+    return funds_manager_contract.fee()

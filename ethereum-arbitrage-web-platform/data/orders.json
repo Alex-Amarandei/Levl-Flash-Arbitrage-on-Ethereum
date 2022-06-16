@@ -1,10 +1,29 @@
 {
-    "current_id": 7,
-    "orders": [{
-        "id": 7,
-        "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
-        "token_0_address": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102",
-        "token_1_address": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0",
-        "fee": 0.01
-    }]
+    "current_id": 3,
+    "orders": [
+        {
+            "id": 1,
+            "network": "rinkeby",
+            "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
+            "token_0_address": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102",
+            "token_1_address": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0",
+            "fee": 0.01
+        },
+        {
+            "id": 2,
+            "network": "rinkeby",
+            "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
+            "token_0_address": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102",
+            "token_1_address": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0",
+            "fee": "10000000000000000"
+        },
+        {
+            "id": 3,
+            "network": "rinkeby",
+            "user_address": "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
+            "token_0_address": "0x32A8890cf34137E2BAA3ce9A7381ac2cC6bDC102",
+            "token_1_address": "0x7AE2185C5A7FE772818Fe1469DFE9c16c43d81f0",
+            "fee": "0.01"
+        }
+    ]
 }
