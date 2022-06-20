@@ -10,7 +10,7 @@ def migrate_config():
         config = yaml.load(brownie_config, Loader=yaml.FullLoader)
 
         with open(
-            "/Users/alex-ama/Files/GitHub/Levl-Front-End/client/src/brownie-config.json",
+            "/Users/alex-ama/Files/GitHub/Levl-Front-End/client/src/brownieConfig.json",
             "w",
         ) as brownie_config_json:
             json.dump(config, brownie_config_json)

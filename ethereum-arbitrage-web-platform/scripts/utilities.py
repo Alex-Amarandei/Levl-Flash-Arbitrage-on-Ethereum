@@ -1,11 +1,12 @@
 import json
 
 import yaml
-from brownie import DataProvider, FundsManager, accounts, config, interface, network
+from brownie import DataProvider, FundsManager, accounts, config, network
 
-from scripts.address_book_manager import get_address_at, update_address_at
+from scripts.address_book_manager import get_address_at
 from scripts.deploy_manager import contract_router
 from scripts.font_manager import green, highlight, tag, yellow
+from scripts.migration_manager import migrate_builds, migrate_config
 
 LOCAL_ENVIRONMENTS = ["development"]
 FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
@@ -14,16 +15,8 @@ ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 
 def get_account(index=None):
-    ### to delete
     if index == 33:
-        return accounts.add(
-            "15310ce5fce82c4d0fb47b279d753db2932ab41230a24e5e4f9f5f168686af6f"
-        )
-    # if index == 2:
-    #     return accounts.add(
-    #         "b649265f4cd1d8913eca0fb9cf22f43a179c730a10b8e5ffe442d85ba02b2e33"
-    #     )
-    ###
+        return accounts.add(config["wallets"]["deployer"])
     if (
         network.show_active() in LOCAL_ENVIRONMENTS
         or network.show_active() in FORKED_ENVIRONMENTS
@@ -49,17 +42,11 @@ def get_contract(contract_name, contract):
         return contract[-1]
 
 
-def get_factory_address(name):
-    router_address = get_address_at(f"{name}Router")
-
-    return interface.IUniswapV2Router02(router_address).factory()
-
-
 def get_eth_price():
     data_provider_contract = get_contract("DataProvider", DataProvider)
 
     return data_provider_contract.getEthPrice(
-        get_address_at("ETHPriceFeed"), {"from": get_account()}
+        get_address_at(name=["ETHPriceFeed"], source="config"), {"from": get_account()}
     )
 
 
@@ -77,14 +64,6 @@ def get_optimal_trade_data(
         uniswap_reserves_0,
         uniswap_reserves_1,
         {"from": get_account()},
-    )
-
-
-def update_info(contract_name, contract_address):
-    update_address_at(contract_name, with_address=contract_address)
-
-    print(
-        f"{tag('UTILITIES')}{contract_name} contract can be found at {highlight(contract_address)} on the {network.show_active()} network."
     )
 
 

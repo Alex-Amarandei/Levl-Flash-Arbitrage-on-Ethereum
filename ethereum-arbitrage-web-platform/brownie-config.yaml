@@ -20,6 +20,7 @@ networks:
 
 wallets:
   from_key: ${PRIVATE_KEY}
+  deployer: ${DEPLOYER_KEY}
 
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@3.4.0

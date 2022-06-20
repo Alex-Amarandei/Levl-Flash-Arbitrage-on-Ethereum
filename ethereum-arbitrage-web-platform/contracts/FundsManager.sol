@@ -29,7 +29,8 @@ contract FundsManager {
         _;
     }
 
-    function fundWithGas() public payable {
+    /// @notice Used by a user to fund the platform in order to compensate for the gas used
+    function fundWithGas() external payable {
         require(msg.value == fee, "You need to send exactly the fee in ETH!");
 
         userGasAmounts[msg.sender] += msg.value;
@@ -60,7 +61,7 @@ contract FundsManager {
     function useGas(address _userAddress, uint256 _fee) external ownerOnly {
         require(_fee > 0, "The fee cannot be zero.");
         require(
-            userGasAmounts[msg.sender] >= _fee,
+            userGasAmounts[_userAddress] >= _fee,
             "This account has no associated funds left or not enough for the fee provided!"
         );
 

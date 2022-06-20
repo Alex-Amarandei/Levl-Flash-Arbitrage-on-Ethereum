@@ -15,6 +15,9 @@ def get_pair_price(factory_address, token_0_address, token_1_address):
 
     pair_contract = interface.IUniswapV2Pair(pair_address)
 
+    if pair_contract == "0x0000000000000000000000000000000000000000":
+        return (-1, -1)
+
     if not switched:
         (reserve_0, reserve_1, timestamp) = pair_contract.getReserves()
     else:
@@ -44,7 +47,9 @@ def get_pair_address(factory_address, token_0_address, token_1_address):
 
 
 def get_stable_price(factory, token):
-    dai = get_address_at("DAI")
-    (_, price) = get_pair_price(factory, token, dai)
+    dai_address = get_address_at(name=["DAI"], source="config")
+    if token == dai_address:
+        return 1
+    (_, price) = get_pair_price(factory, token, dai_address)
 
     return price

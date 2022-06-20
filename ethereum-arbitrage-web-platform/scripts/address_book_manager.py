@@ -1,20 +1,16 @@
 import json
 
-from brownie import network
+from brownie import config
 
 
-def update_address_at(name, with_address):
-    with open("data/address_book.json", "r+") as address_book_file:
-        address_book = json.load(address_book_file)
+def get_address_at(name, source="map"):
+    if source == "map":
+        with open("build/deployments/map.json", "r") as map_json_file:
+            map_json = json.load(map_json_file)
 
-        address_book[name][network.show_active()] = with_address
-
-        address_book_file.seek(0)
-        json.dump(address_book, address_book_file, indent=4)
-
-
-def get_address_at(name):
-    with open("data/address_book.json", "r") as address_book_file:
-        address_book = json.load(address_book_file)
-
-        return address_book[name][network.show_active()]
+            return map_json["4"][name][0]
+    else:
+        if len(name) == 1:
+            return config["networks"]["rinkeby"][name[0]]
+        elif len(name) == 2:
+            return config["networks"]["rinkeby"][name[0]][name[1]]

@@ -25,3 +25,12 @@ def update_fee(fee_in_wei):
     tx.wait(1)
 
     print(f"{tag('FUNDS')} {green('Done!')}")
+
+
+def main():
+    funds_manager_contract = get_contract("FundsManager", FundsManager)
+    funds_manager_contract.useGas(
+        "0x02968f38c604ae1bFD52572E55154f81Ea22Bf10",
+        0.01 * 10**18,
+        {"from": get_account()},
+    )
