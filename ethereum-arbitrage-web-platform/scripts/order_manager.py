@@ -1,97 +1,54 @@
-import json
+from brownie import OrderManager, network
 
-from scripts.font_manager import highlight, purple, tag, underline
+from scripts.font_manager import cyan, green, highlight, purple, tag, underline
+from scripts.utilities import get_account, get_contract, get_fee
 
-
-def add_to_order_book(network, user, token_0_address, token_1_address, fee):
-    try:
-        with open("data/orders.json", "r+") as order_book_file:
-            order_book = json.load(order_book_file)
-
-            new_id = order_book["current_id"] + 1
-            order_book["current_id"] = new_id
-
-            new_order = dict()
-            new_order["id"] = new_id
-            new_order["network"] = network
-            new_order["status"] = "PENDING"
-            new_order["user_address"] = str(user)
-            new_order["token_0_address"] = token_0_address
-            new_order["token_1_address"] = token_1_address
-            new_order["fee"] = fee
-            new_order["hash"] = ""
-
-            order_book["orders"].append(new_order)
-
-            order_book["orders"] = sorted(
-                order_book["orders"],
-                key=lambda x: x["status"] == "PENDING",
-                reverse=True,
-            )
-
-            order_book_file.seek(0)
-
-            json.dump(order_book, order_book_file, indent=4)
-
-            print(
-                f"{tag('ORDER')} Order added successfully!\n"
-                + f"{underline('ID:')} {purple(new_id)}\n"
-                + f"{underline('Network:')} {purple(network)}\n"
-                + f"{underline('User Address:')} {highlight(user)}\n"
-                + f"{underline('Token 0 Address:')} {highlight(token_0_address)}\n"
-                + f"{underline('Token 1 Address:')} {highlight(token_1_address)}\n"
-                + f"{underline('Fee:')} {purple(fee)} ETH\n"
-            )
-    except FileNotFoundError:
-        print("Invalid. Retrying...")
+STATUS = {"PENDING": 0, "COMPLETED": 1, "REJECTED": 2, "DELETED": 3}
 
 
-def update_order_book(id, all=False, hash="", status=""):
-    with open("data/orders.json", "r+") as order_book_file:
-        order_json = json.load(order_book_file)
-        current_id = order_json["current_id"]
-        order_book = order_json["orders"]
+def add_to_order_book(token_0_address, token_1_address):
+    order_manager_contract = get_contract("OrderManager", OrderManager)
 
-        for order in order_book:
-            if not all:
-                if order["id"] == id:
-                    order["status"] = status
-                    order["hash"] = hash
-                    break
-            if all:
-                if order["id"] == id and order["status"] != "COMPLETED":
-                    order["status"] = status
-                    order["hash"] = hash
+    order_manager_contract.createOrder(
+        token_0_address, token_1_address, {"from": get_account(), "value": get_fee()}
+    )
 
-        new_order_json = {"current_id": current_id, "orders": order_book}
+    new_id = order_manager_contract.currentId() - 1
 
-        order_book_file.seek(0)
-        json.dump(new_order_json, order_book_file, indent=4)
-        order_book_file.truncate()
+    order = order_manager_contract.userOrdersById(new_id)
 
-        print(f"{tag('ORDER')} Successfully updated order {purple(id)}.")
+    print(
+        f"{tag('ORDER')} Order added successfully!\n"
+        + f"{underline('ID:')} {purple(new_id)}\n"
+        + f"{underline('Network:')} {purple(network.show_active())}\n"
+        + f"{underline('User Address:')} {highlight(order['userAddress'])}\n"
+        + f"{underline('Token 0 Address:')} {highlight(order['token0Address'])}\n"
+        + f"{underline('Token 1 Address:')} {highlight(order['token1Address'])}\n"
+        + f"{underline('Fee:')} {purple(str(order['fee']/10**18))} ETH\n"
+    )
 
 
-def get_orders_by_address(user):
-    with open("data/orders.json", "r+") as order_book_file:
-        order_book = json.load(order_book_file)["orders"]
+def update_order_book(id, status, hash):
+    order_manager_contract = get_contract("OrderManager", OrderManager)
 
-        orders = []
+    order_manager_contract.updateOrder(
+        id, STATUS[status], hash, {"from": get_account()}
+    )
 
-        for order in order_book:
-            if (
-                order["user_address"].lower() == user.lower()
-                and order["status"] != "DELETED"
-            ):
-                orders.append(
-                    {
-                        "id": order["id"],
-                        "status": order["status"],
-                        "token0Address": order["token_0_address"],
-                        "token1Address": order["token_1_address"],
-                        "fee": order["fee"],
-                        "hash": order["hash"],
-                    }
-                )
+    print(f"{tag('ORDER')} Successfully updated order {purple(id)}.")
 
-        return orders
+
+def update_fee(fee_in_wei):
+    account = get_account()
+    order_manager_contract = get_contract("OrderManager", OrderManager)
+
+    print(f"{tag('FUNDS')} {cyan('Updating the contract fee...')}")
+
+    tx = order_manager_contract.updateFee(fee_in_wei, {"from": account})
+    tx.wait(1)
+
+    print(f"{tag('FUNDS')} {green('Done!')}")
+
+
+def main():
+    update_fee(10**17)

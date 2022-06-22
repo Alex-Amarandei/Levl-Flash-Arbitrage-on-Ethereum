@@ -1,7 +1,7 @@
 from brownie import interface
 
 from scripts.address_book_manager import get_address_at
-from scripts.utilities import get_account, highlight, tag
+from scripts.utilities import ZERO_ADDRESS, get_account, highlight, tag
 
 
 def get_pair_price(factory_address, token_0_address, token_1_address):
@@ -15,7 +15,7 @@ def get_pair_price(factory_address, token_0_address, token_1_address):
 
     pair_contract = interface.IUniswapV2Pair(pair_address)
 
-    if pair_contract == "0x0000000000000000000000000000000000000000":
+    if pair_contract == ZERO_ADDRESS:
         return (-1, -1)
 
     if not switched:
@@ -36,6 +36,7 @@ def get_pair_address(factory_address, token_0_address, token_1_address):
         switched = True
 
     factory = interface.IUniswapV2Factory(factory_address)
+
     return (
         factory.getPair(
             token_0_address,

@@ -1,12 +1,8 @@
-import json
-
-import yaml
-from brownie import DataProvider, FundsManager, accounts, config, network
+from brownie import DataProvider, OrderManager, accounts, config, network
 
 from scripts.address_book_manager import get_address_at
 from scripts.deploy_manager import contract_router
 from scripts.font_manager import green, highlight, tag, yellow
-from scripts.migration_manager import migrate_builds, migrate_config
 
 LOCAL_ENVIRONMENTS = ["development"]
 FORKED_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
@@ -68,5 +64,5 @@ def get_optimal_trade_data(
 
 
 def get_fee():
-    funds_manager_contract = get_contract("FundsManager", FundsManager)
-    return funds_manager_contract.fee()
+    order_manager_contract = get_contract("OrderManager", OrderManager)
+    return order_manager_contract.fee()
