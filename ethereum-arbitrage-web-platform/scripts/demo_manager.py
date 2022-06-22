@@ -6,7 +6,7 @@ from scripts.address_book_manager import get_address_at
 from scripts.deploy_manager import (
     deploy_data_provider_contract,
     deploy_flash_arbitrage_contract,
-    deploy_funds_manager_contract,
+    deploy_order_manager_contract,
     deploy_token,
 )
 from scripts.migration_manager import migrate_builds, migrate_config
@@ -123,7 +123,7 @@ def demo_deploy_liquidity():
 
 def demo_deploy_all_contracts():
     account = get_account()
-    deploy_funds_manager_contract(account)
+    deploy_order_manager_contract(account)
     deploy_flash_arbitrage_contract(account)
     deploy_data_provider_contract(account)
 
@@ -131,5 +131,9 @@ def demo_deploy_all_contracts():
 def main():
     demo_deploy_liquidity()
     demo_deploy_all_contracts()
-    migrate_config()
-    migrate_builds()
+
+    # Complete with the path to the src folder in the front end
+    path = "client/src"
+
+    migrate_config(path)
+    migrate_builds(path)
