@@ -129,11 +129,11 @@ def demo_deploy_all_contracts():
 
 
 def main():
-    demo_deploy_liquidity()
-    demo_deploy_all_contracts()
+    # demo_deploy_liquidity()
+    # demo_deploy_all_contracts()
 
     # Complete with the path to the src folder in the front end
-    path = "client/src"
+    path = "client/src/"
 
     migrate_config(path)
     migrate_builds(path)

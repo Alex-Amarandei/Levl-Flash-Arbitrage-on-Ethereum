@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+* html {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root,
+.App {
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.chipReceipt .MuiChip-root {
+    width: 200px;
+    margin-bottom: 10px;
+    box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0, 0, 0, 0);
+}
+
+.gradient-background-dark {
+    background-color: rgb(14, 116, 144);
+    background-image: radial-gradient( at 90% 60%, rgb(12, 74, 110) 0, transparent 85%), radial-gradient(at 6% 52%, rgb(254, 242, 242) 0, transparent 60%), radial-gradient(at 54% 73%, rgb(250, 232, 255) 0, transparent 87%), radial-gradient(at 99% 35%, rgb(248, 250, 252) 0, transparent 63%), radial-gradient(at 91% 69%, rgb(113, 63, 18) 0, transparent 63%), radial-gradient(at 100% 13%, rgb(34, 211, 238) 0, transparent 30%);
+}
+
+.gradient-background-light {
+    background-color: rgb(139, 92, 246);
+    background-image: radial-gradient( at 8% 36%, rgb(2, 132, 199) 0, transparent 78%), radial-gradient(at 97% 100%, rgb(254, 205, 211) 0, transparent 27%), radial-gradient(at 33% 9%, rgb(153, 27, 27) 0, transparent 82%), radial-gradient(at 9% 66%, rgb(251, 146, 60) 0, transparent 57%), radial-gradient(at 29% 53%, rgb(17, 24, 39) 0, transparent 91%), radial-gradient(at 15% 42%, rgb(82, 82, 82) 0, transparent 40%);
+}
+
+.gradient-white-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
