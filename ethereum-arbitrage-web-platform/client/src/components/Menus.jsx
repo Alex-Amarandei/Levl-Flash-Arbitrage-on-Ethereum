@@ -183,7 +183,9 @@ const Menus = () => {
 
 	useEffect(() => {
 		getOrders.then((res) => {
+			console.log(res, "before");
 			res.reverse();
+			console.log(res, "after");
 			setOrders(res);
 		});
 	}, []);

@@ -256,11 +256,11 @@ def check_arbitrage(
             parameters[1],
             flash_contract_address,
             encode_abi(
-                ["uint256", "address", "uint256"],
+                ["uint256", "uint256", "address"],
                 [
                     amount_to_repay,
-                    order["user_address"],
                     int(time.time()) + 1800,
+                    order["user_address"],
                 ],
             ),
             {
@@ -286,3 +286,4 @@ def check_arbitrage(
 def main():
     while True:
         establish_direction()
+        time.sleep(5)

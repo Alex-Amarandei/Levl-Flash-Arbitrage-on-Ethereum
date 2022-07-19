@@ -30,12 +30,10 @@ const useGetOrders = async (address) => {
 		})
 		.catch((error) => console.log(error));
 
-	console.log(rawOrders[0]["status"]);
-
 	rawOrders.forEach((order) => {
 		orders.push({
 			id: order["id"].toNumber(),
-			fee: ethers.utils.formatEther(rawOrders[0]["fee"]),
+			fee: ethers.utils.formatEther(order["fee"]),
 			status: getStatus(order["status"]),
 			token0Address: order["token0Address"],
 			token1Address: order["token1Address"],

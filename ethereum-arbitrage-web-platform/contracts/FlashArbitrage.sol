@@ -52,9 +52,9 @@ contract FlashArbitrage is IUniswapV2Callee {
         uint256 _amountToken1,
         bytes calldata _data
     ) external override {
-        (uint256 amountToRepay, address user, uint256 deadline) = abi.decode(
+        (uint256 amountToRepay, uint256 deadline, address user) = abi.decode(
             _data,
-            (uint256, address, uint256)
+            (uint256, uint256, address)
         );
 
         uint256 amount;

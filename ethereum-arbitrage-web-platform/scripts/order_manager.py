@@ -1,7 +1,7 @@
 from brownie import OrderManager, network
 
 from scripts.font_manager import cyan, green, highlight, purple, tag, underline
-from scripts.utilities import get_account, get_contract, get_fee
+from scripts.utilities import ZERO_ADDRESS, get_account, get_contract, get_fee
 
 STATUS = {"PENDING": 0, "COMPLETED": 1, "REJECTED": 2, "DELETED": 3}
 
@@ -51,4 +51,4 @@ def update_fee(fee_in_wei):
 
 
 def main():
-    update_fee(10**17)
+    update_fee(10**16)

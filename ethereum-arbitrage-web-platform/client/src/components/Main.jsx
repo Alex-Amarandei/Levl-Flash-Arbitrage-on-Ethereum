@@ -166,7 +166,7 @@ const Main = () => {
 
 			<Snackbar
 				open={showPairAlert.length > 0}
-				autoHideDuration={5000}
+				autoHideDuration={10000}
 				onClose={handleCloseSnack}
 			>
 				<Alert
