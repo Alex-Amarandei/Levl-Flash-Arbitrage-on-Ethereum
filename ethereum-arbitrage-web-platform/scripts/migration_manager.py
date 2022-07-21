@@ -8,7 +8,7 @@ from scripts.font_manager import cyan, green, tag
 
 
 def migrate_config(path):
-    print(tag("MIGRATION"), cyan("Migratig config..."))
+    print(tag("MIGRATION"), cyan("Migrating config..."))
     with open("brownie-config.yaml", "r") as brownie_config:
         config = yaml.load(brownie_config, Loader=yaml.FullLoader)
 
@@ -21,7 +21,7 @@ def migrate_config(path):
 
 
 def migrate_builds(path):
-    print(tag("MIGRATION"), cyan("Migratig builds..."))
+    print(tag("MIGRATION"), cyan("Migrating builds..."))
 
     if os.path.exists(path + "contract_builds"):
         shutil.rmtree(path + "contract_builds")
@@ -30,3 +30,11 @@ def migrate_builds(path):
         path + "contract_builds",
     )
     print(tag("MIGRATION"), green("Done!"))
+
+
+def main():
+    # Complete with the path to the src folder in the front end
+    path = "client/src/"
+
+    migrate_config(path)
+    migrate_builds(path)

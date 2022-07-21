@@ -10,3 +10,4 @@ package-lock.json
 .DS_store
 ethereum-arbitrage-web-platform/.DS_Store
 ethereum-arbitrage-web-platform/server/flask_environment/*
+.vscode/settings.json

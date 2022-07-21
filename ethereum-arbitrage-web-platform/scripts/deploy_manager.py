@@ -97,3 +97,7 @@ def deploy_all_contracts():
     deploy_flash_arbitrage_contract(account)
     deploy_order_manager_contract(account)
     deploy_data_provider_contract(account)
+
+
+def main():
+    deploy_all_contracts()
